@@ -1,0 +1,14 @@
+version: "1"
+log_level: "debug"
+
+execution_config:
+  file:
+    path: "/app/config.json"
+
+dev_mode: true
+introspection: true
+
+cors:
+  allow_origins: ["*"]
+  allow_headers: ["*"]
+  allow_methods: ["GET", "POST", "OPTIONS"]

@@ -1,0 +1,18 @@
+version: "1"
+log_level: "warn"
+
+execution_config:
+  file:
+    path: "/app/config.json"
+
+dev_mode: false
+introspection: false
+
+cors:
+  allow_origins: ["https://myapp.com"]
+  allow_headers: ["Content-Type", "Authorization"]
+  allow_methods: ["GET", "POST"]
+
+security:
+  block_mutations: false
+  block_subscriptions: false

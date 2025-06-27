@@ -1,0 +1,50 @@
+services:
+  wg-router:
+    build:
+      context: ./router
+      dockerfile: Dockerfile
+    ports:
+      - "4000:3002"
+    environment:
+      - LISTEN_ADDR=0.0.0.0:3002
+    depends_on:
+      sales-subgraph:
+        condition: service_healthy
+      marketing-subgraph:
+        condition: service_healthy
+    networks:
+      - cosmo-network
+
+  sales-subgraph:
+    build:
+      context: ./subgraphs/sales
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4001"
+    networks:
+      - cosmo-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4001/health"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+      start_period: 10s
+
+  marketing-subgraph:
+    build:
+      context: ./subgraphs/marketing
+      dockerfile: Dockerfile
+    ports:
+      - "4002:4002"
+    networks:
+      - cosmo-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4002/health"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+      start_period: 10s
+
+networks:
+  cosmo-network:
+    driver: bridge

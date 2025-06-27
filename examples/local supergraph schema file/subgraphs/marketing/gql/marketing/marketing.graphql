@@ -1,0 +1,32 @@
+directive @key(fields: String!) on OBJECT | INTERFACE
+
+type CampaignPayload @key(fields: "id") {
+  id: ID!
+  name: String!
+  description: String!
+  budget: Float!
+  startDate: String!
+  endDate: String!
+  isActive: Boolean!
+}
+
+input CreateCampaignInput {
+  name: String!
+  description: String!
+  budget: Float!
+  startDate: String!
+  endDate: String!
+  isActive: Boolean!
+}
+
+type Query {
+  campaigns: [CampaignPayload!]!
+  campaign(id: ID!): CampaignPayload
+  activeCampaigns: [CampaignPayload!]!
+  totalMarketingBudget: Float!
+  activeMarketingBudget: Float!
+}
+
+type Mutation {
+  createCampaign(input: CreateCampaignInput!): CampaignPayload!
+}

@@ -1,0 +1,24 @@
+type Sale {
+  id: ID!
+  amount: Float!
+  productName: String!
+  customerEmail: String!
+  saleDate: String!
+}
+
+type Query {
+  sales: [Sale!]!
+  sale(id: String!): Sale
+  totalRevenue: Float!
+}
+
+type Mutation {
+  createSale(input: CreateSaleInput!): Sale!
+}
+
+input CreateSaleInput {
+  amount: Float!
+  productName: String!
+  customerEmail: String!
+  saleDate: String!
+}

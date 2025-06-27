@@ -1,0 +1,14 @@
+version: 1
+subgraphs:
+  - name: sales
+    routing_url: http://localhost:4001/graphql
+    schema:
+      file: ../../subgraphs/sales/schema/schema.graphql
+    subscription:
+      url: http://localhost:4001/sse
+      protocol: sse
+      websocket_subprotocol: graphql-ws
+  - name: marketing
+    routing_url: http://localhost:4002/graphql
+    schema:
+      file: ../../subgraphs/marketing/schema/schema.graphql

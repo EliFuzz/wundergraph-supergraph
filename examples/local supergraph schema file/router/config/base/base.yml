@@ -1,0 +1,10 @@
+version: "1"
+log_level: "info"
+
+execution_config:
+  file:
+    path: "/app/config.json"
+
+dev_mode: true
+health_check_path: "/health"
+graphql_path: "/graphql"
