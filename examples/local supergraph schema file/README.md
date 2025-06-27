@@ -50,3 +50,17 @@ flowchart TD
 
 - Add new subgraphs for additional domains
 - Update router config for new services
+
+# Visualizations
+
+## Query Plan
+
+![](img/query-plan.png)
+
+## Request Trace: Tree View
+
+![](img/request-trace-tree-view.png)
+
+## Request Trace: Waterfall View
+
+![](img/request-trace-waterfall-view.png)
