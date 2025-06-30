@@ -1,0 +1,97 @@
+services:
+  wg-router:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "4000:3002"
+    environment:
+      - LISTEN_ADDR=0.0.0.0:3002
+      - AWS_ACCESS_KEY_ID=user
+      - AWS_SECRET_ACCESS_KEY=password
+      - AWS_REGION=auto
+    depends_on:
+      sales-subgraph:
+        condition: service_healthy
+      marketing-subgraph:
+        condition: service_healthy
+      minio-setup:
+        condition: service_completed_successfully
+    restart: on-failure
+    networks:
+      - primary
+
+  sales-subgraph:
+    build:
+      context: ../../subgraphs/sales
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4001"
+    networks:
+      - primary
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4001/health"]
+      interval: 10s
+      timeout: 30s
+      retries: 10
+      start_period: 30s
+
+  marketing-subgraph:
+    build:
+      context: ../../subgraphs/marketing
+      dockerfile: Dockerfile
+    ports:
+      - "4002:4002"
+    networks:
+      - primary
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4002/health"]
+      interval: 10s
+      timeout: 30s
+      retries: 10
+      start_period: 30s
+
+  minio:
+    image: bitnami/minio:latest
+    environment:
+      - MINIO_ROOT_USER=user
+      - MINIO_ROOT_PASSWORD=password
+      - MINIO_DEFAULT_BUCKETS=cosmo:public
+    ports:
+      - "10000:9000"
+    volumes:
+      - minio_data:/data
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 30s
+      retries: 10
+      start_period: 30s
+    networks:
+      - primary
+
+  minio-setup:
+    image: bitnami/minio-client:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    volumes:
+      - ./s3/router.json:/router.json
+    entrypoint: >
+      sh -c "
+      sleep 5;
+      mc alias set minio http://minio:9000 user password;
+      mc mb minio/cosmo;
+      mc cp /router.json minio/cosmo/router.json;
+      mc anonymous set public minio/cosmo;
+      "
+    networks:
+      - primary
+
+networks:
+  primary:
+    driver: bridge
+
+volumes:
+  minio_data:

@@ -1,6 +1,6 @@
-# Local Supergraph Schema File
+# S3 Bucket for Supergraph Schema
 
-This is a local supergraph schema file for WunderGraph Cosmo Router.
+The S3 bucket is used to store the supergraph schema, allowing for easy access and management of the schema files.
 
 # 📋 Architecture Overview
 
@@ -8,21 +8,29 @@ This is a local supergraph schema file for WunderGraph Cosmo Router.
 
 - **Subgraphs**: Modular GraphQL services (e.g., marketing, sales)
 - **Router**: Supergraph router for federated queries
+- **S3 Bucket**: Storage for the supergraph schema
 
 ## Architecture Diagram
 
 ```mermaid
 flowchart TD
-
     subgraph cicd[CI/CD]
-        cli[CLI]
+        cli(CLI)
     end
 
-    user(User) a1@--->|query| router[[Router]]
+    subgraph os[OS]
+        s3[(S3 Bucket)]
+    end
+
+    cli a0@-->|push supergraph schema| s3
+
+    user(User) a1@-->|query| router[[Router]]
     router a2@--> marketing(Marketing Subgraph)
     router a3@--> sales(Sales Subgraph)
-    cli a4@-->|deploy supergraph schema| router
 
+    router a4@-->|poll latest supergraph schema| s3
+
+    a0@{ animate: true }
     a1@{ animate: true }
     a2@{ animate: true }
     a3@{ animate: true }

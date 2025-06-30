@@ -14,7 +14,7 @@ marketing:
 
 .PHONY: supergraph
 supergraph:
-	npx wgc router compose -i ../../router/config/router.yml -o ./storage/router.json
+	npx wgc router compose -i ../../router/config/router.yml -o ./s3/router.json
 
 .PHONY: router
 router: docker-down docker-up

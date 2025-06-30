@@ -1,7 +1,7 @@
 services:
   wg-router:
     build:
-      context: ./router
+      context: .
       dockerfile: Dockerfile
     ports:
       - "4000:3002"
@@ -17,7 +17,7 @@ services:
 
   sales-subgraph:
     build:
-      context: ./subgraphs/sales
+      context: ../../subgraphs/sales
       dockerfile: Dockerfile
     ports:
       - "4001:4001"
@@ -28,11 +28,11 @@ services:
       interval: 5s
       timeout: 30s
       retries: 5
-      start_period: 10s
+      start_period: 30s
 
   marketing-subgraph:
     build:
-      context: ./subgraphs/marketing
+      context: ../../subgraphs/marketing
       dockerfile: Dockerfile
     ports:
       - "4002:4002"
@@ -43,7 +43,7 @@ services:
       interval: 5s
       timeout: 30s
       retries: 5
-      start_period: 10s
+      start_period: 30s
 
 networks:
   cosmo-network:

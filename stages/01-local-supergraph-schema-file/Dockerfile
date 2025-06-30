@@ -1,7 +1,7 @@
 FROM ghcr.io/wundergraph/cosmo/router:latest
 
-COPY router.json router.json
-COPY config.yml config.yml
+COPY ./router/config.yml config.yml
+COPY ./storage/router.json router.json
 
 EXPOSE 3002
 
